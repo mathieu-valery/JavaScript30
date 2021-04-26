@@ -73,9 +73,6 @@ function removeTransition(e) {
     audio.currentTime = 0
     audio.play();
     key.classList.add('playing')
-    // setTimeout(() => {
-    //   key.classList.remove('playing')
-    // }, 200);
 
   }
 
@@ -87,8 +84,7 @@ function removeTransition(e) {
     audio.currentTime = 0
     audio.play();
     key.classList.add('playing')
-    // document.addEventListener('keyup', function(){key.classList.remove('playing')})
-
+ 
   }
 
 keys.forEach(key => key.addEventListener('click', ClickPlay))
