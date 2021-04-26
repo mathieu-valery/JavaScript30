@@ -57,7 +57,38 @@
   <audio data-key="75" src="sounds/tom.wav"></audio>
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
-<script>
+<script >
+let keys = document.querySelectorAll('.key')
+let audios = Array.from(document.querySelectorAll('audio'));
+
+
+  function ClickPlay(e) {
+    let key = document.querySelector(`div[data-key="${e.target.parentElement.dataset.key}"]`)
+    let audio = audios.find(audio => audio.dataset.key == e.target.parentElement.dataset.key)
+    if (!audio) return
+    audio.currentTime = 0
+    audio.play();
+    key.classList.add('playing')
+    setTimeout(() => {
+      key.classList.remove('playing')
+    }, 200);
+
+  }
+
+  function KbdPlay(e) {
+    if (e.repeat) return 
+    let key = document.querySelector(`div[data-key="${e.keyCode}"]`)
+    let audio = audios.find(audio => audio.dataset.key == e.keyCode)
+    if (!audio) return
+    audio.currentTime = 0
+    audio.play();
+    key.classList.add('playing')
+    document.addEventListener('keyup', function(){key.classList.remove('playing')})
+
+  }
+
+keys.forEach(key => key.addEventListener('click', ClickPlay))
+document.addEventListener('keydown', KbdPlay)
 
 </script>
 
