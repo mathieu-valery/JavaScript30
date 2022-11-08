@@ -9,6 +9,7 @@
 <body>
 
   <h1>Whack-a-mole! <span class="score">0</span></h1>
+  <h2>High Score: <span class="highscore">0</span></h2>
   <button onClick="startGame()">Start!</button>
 
   <div class="game">
@@ -35,8 +36,66 @@
 <script>
   const holes = document.querySelectorAll('.hole');
   const scoreBoard = document.querySelector('.score');
+  const highScoreBoard = document.querySelector('.highscore');
   const moles = document.querySelectorAll('.mole');
+  let lastHole;
+  let timeUp;
+  let score = 0;
+  let gameTimeOut;
+  let peepTimeOut;
 
+  function randTime(min,max) {
+    return Math.round(Math.random() * (max - min) + min)
+  }
+
+  function randHole(holes) {
+    const index = Math.floor(Math.random() * holes.length);
+    const hole = holes[index];
+
+    if (hole === lastHole) {
+      // ('Nope its the same hole');
+      return randHole(holes)
+    }
+    lastHole = hole;
+    return hole;
+  }
+
+  function peep() {
+    const time = randTime(200,1000);
+    const hole = randHole(holes);
+    hole.classList.add('up');
+    peepTimeOut = setTimeout(() => {
+      hole.classList.remove('up');
+      if (!timeUp) peep();
+    }
+    ,time)
+  }
+
+  function bonk(e) {
+    let highScore =  localStorage.getItem('highScore') || 0;
+    if (!e.isTrusted) return //the player cheat with Javascript
+    score++;
+    this.classList.add('up');
+    scoreBoard.textContent = score;
+
+    if (score > highScore) {
+      localStorage.setItem('highScore', score);
+      highScoreBoard.textContent = score;
+    }
+  }
+
+  function startGame() {
+    clearTimeout(gameTimeOut);
+    clearTimeout(peepTimeOut);
+    scoreBoard.textContent = 0;
+    score = 0;
+    timeUp = false;
+    peep();
+    gameTimeOut = setTimeout(() => timeUp = true, 10000)
+  }
+
+  highScoreBoard.textContent = localStorage.getItem('highScore') || 0;
+  moles.forEach(mole => mole.addEventListener('click', bonk))
 </script>
 </body>
 </html>
